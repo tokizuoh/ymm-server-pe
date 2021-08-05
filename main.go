@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"ymmerrs"
@@ -28,6 +29,12 @@ func extractCSV(args []string) (string, error) {
 type scoreLog struct {
 	playerId int
 	score    int
+}
+
+type player struct {
+	id        int
+	meanScore int
+	rank      int
 }
 
 func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
@@ -94,8 +101,44 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for _, s := range sls {
-		log.Println(s.playerId, s.score)
+	// totalScoreMap. key: id, value: total score
+	tsm := make(map[int]int)
+
+	// scoreCountMap. key: id, value: amount of score-log
+	scm := make(map[int]int)
+
+	for _, sl := range sls {
+		tsm[sl.playerId] += sl.score
+		scm[sl.playerId] += 1
+	}
+
+	var meanScores [][]int // [[meanScore, id], [meanScore, id] ...]
+	for key, value := range tsm {
+		id := key
+		meanScore := value / scm[id]
+		ms := []int{meanScore, id}
+		meanScores = append(meanScores, ms)
+	}
+
+	sort.Slice(meanScores, func(i, j int) bool {
+		return meanScores[i][0] > meanScores[j][0]
+	})
+
+	var ps []player
+
+	cr := 1  // current rank
+	cs := -1 // current top mean-score
+	for _, ms := range meanScores {
+
+		if cs == -1 {
+			cs = ms[0]
+		} else if cs > ms[0] {
+			cr += 1
+			cs = ms[0]
+		}
+
+		p := player{id: ms[1], meanScore: ms[0], rank: cr}
+		ps = append(ps, p)
 	}
 
 }
