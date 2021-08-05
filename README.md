@@ -16,6 +16,9 @@ rank,player_id,mean_score
 9,4,4071
 10,1,4054
 ```
+  
+game_score_log.csv は [ymm-server-pe-gen](https://github.com/tokizuoh/ymm-server-pe-gen/blob/master/main.go) で生成したものを利用。  
+  
 ## Docker
   
 ### Version
@@ -28,7 +31,7 @@ Docker version 19.03.12, build 48a66213fe
 docker-compose version 1.27.2, build 18f557f9
 ```
   
-### Build
+### Buildgs
   
 ```bash
 > docker-compose up --build -d
