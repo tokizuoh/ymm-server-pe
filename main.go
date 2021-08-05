@@ -3,26 +3,12 @@ package main
 import (
 	"encoding/csv"
 	"flag"
-	"fmt"
 	"io"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 )
-
-type notExistError struct{}
-type invalidElementsCount struct {
-	n int
-}
-
-func (e *notExistError) Error() string {
-	return fmt.Sprintf("csv file does not exist")
-}
-
-func (e *invalidElementsCount) Error() string {
-	return fmt.Sprintf("number of elements in the array is not %v", e.n)
-}
 
 func extractCSV(args []string) (string, error) {
 	if len(args) != 1 {
