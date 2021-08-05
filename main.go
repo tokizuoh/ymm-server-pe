@@ -8,17 +8,18 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"ymmerrs"
 )
 
 func extractCSV(args []string) (string, error) {
 	if len(args) != 1 {
-		return "", &notExistError{}
+		return "", &ymmerrs.NotExistError{}
 	}
 
 	arg := args[0]
 
 	if !strings.HasSuffix(arg, ".csv") {
-		return "", &notExistError{}
+		return "", &ymmerrs.NotExistError{}
 	}
 
 	return arg, nil
@@ -34,7 +35,7 @@ func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 
 	for _, line := range lines {
 		if len(line) != 2 {
-			return nil, &invalidElementsCount{n: 2}
+			return nil, &ymmerrs.InvalidElementsCount{N: 2}
 		}
 
 		playerId, err := strconv.Atoi(line[0])
