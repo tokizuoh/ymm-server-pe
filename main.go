@@ -43,7 +43,7 @@ func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 
 	for _, line := range lines {
 		if len(line) != 2 {
-			return nil, &ymmerrs.InvalidElementsCount{N: 2}
+			return nil, &ymmerrs.InvalidElementsCountError{N: 2}
 		}
 
 		playerId, err := strconv.Atoi(line[0])
