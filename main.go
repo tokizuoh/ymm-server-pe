@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -141,4 +142,10 @@ func main() {
 		ps = append(ps, p)
 	}
 
+	// stdout result
+	fmt.Println("rank,player_id,mean_score")
+	for _, p := range ps {
+		row := fmt.Sprintf("%v,%v,%v", p.rank, p.id, p.meanScore)
+		fmt.Println(row)
+	}
 }
