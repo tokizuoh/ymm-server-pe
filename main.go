@@ -134,6 +134,9 @@ func main() {
 		if cs == -1 {
 			cs = ms[0]
 		} else if cs > ms[0] {
+			if len(ps) >= 10 {
+				break
+			}
 			cr += 1
 			cs = ms[0]
 		}
