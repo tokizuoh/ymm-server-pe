@@ -13,6 +13,7 @@ import (
 	"ymmerrs"
 )
 
+// extractCSV returns CSV file name from []string.
 func extractCSV(args []string) (string, error) {
 	if len(args) != 1 {
 		return "", &ymmerrs.NotExistError{}
@@ -38,6 +39,7 @@ type player struct {
 	rank      int
 }
 
+// parseScoreLogs returns parsing of [][]string to []scoreLog.
 func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 	var sls []scoreLog
 
@@ -63,6 +65,7 @@ func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 	return sls, nil
 }
 
+// readCSV returns [][]string using *csv.Reader.
 func readCSV(reader *csv.Reader, header bool) ([][]string, error) {
 	var lines [][]string
 
