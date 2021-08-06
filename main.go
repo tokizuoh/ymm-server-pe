@@ -63,6 +63,33 @@ func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 	return sls, nil
 }
 
+func readCSV(reader *csv.Reader, header bool) ([][]string, error) {
+	var lines [][]string
+
+	// ヘッダーを読み込む
+	line, err := reader.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	if header {
+		lines = append(lines, line)
+	}
+
+	for {
+		line, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		lines = append(lines, line)
+	}
+
+	return lines, nil
+}
+
 func main() {
 	flag.Parse()
 	args := flag.Args()
@@ -80,21 +107,9 @@ func main() {
 
 	reader := csv.NewReader(file)
 
-	// ヘッダーを読み込む
-	if _, err := reader.Read(); err != nil {
+	lines, err := readCSV(reader, false)
+	if err != nil {
 		log.Fatal(err)
-	}
-
-	var lines [][]string
-	for {
-		line, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		lines = append(lines, line)
 	}
 
 	sls, err := parseScoreLogs(lines)
