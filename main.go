@@ -13,6 +13,18 @@ import (
 	"ymmerrs"
 )
 
+type scoreLog struct {
+	playerId int
+	score    int
+}
+
+type player struct {
+	id        int
+	meanScore int
+	rank      int
+}
+
+// extractCSV returns CSV file name from []string.
 func extractCSV(args []string) (string, error) {
 	if len(args) != 1 {
 		return "", &ymmerrs.NotExistError{}
@@ -27,17 +39,35 @@ func extractCSV(args []string) (string, error) {
 	return arg, nil
 }
 
-type scoreLog struct {
-	playerId int
-	score    int
+// readCSV returns [][]string using *csv.Reader.
+func readCSV(reader *csv.Reader, header bool) ([][]string, error) {
+	var lines [][]string
+
+	// ヘッダーを読み込む
+	line, err := reader.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	if header {
+		lines = append(lines, line)
+	}
+
+	for {
+		line, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		lines = append(lines, line)
+	}
+
+	return lines, nil
 }
 
-type player struct {
-	id        int
-	meanScore int
-	rank      int
-}
-
+// parseScoreLogs returns parsing of [][]string to []scoreLog.
 func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
 	var sls []scoreLog
 
@@ -80,21 +110,9 @@ func main() {
 
 	reader := csv.NewReader(file)
 
-	// ヘッダーを読み込む
-	if _, err := reader.Read(); err != nil {
+	lines, err := readCSV(reader, false)
+	if err != nil {
 		log.Fatal(err)
-	}
-
-	var lines [][]string
-	for {
-		line, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		lines = append(lines, line)
 	}
 
 	sls, err := parseScoreLogs(lines)
