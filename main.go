@@ -13,6 +13,17 @@ import (
 	"ymmerrs"
 )
 
+type scoreLog struct {
+	playerId int
+	score    int
+}
+
+type player struct {
+	id        int
+	meanScore int
+	rank      int
+}
+
 // extractCSV returns CSV file name from []string.
 func extractCSV(args []string) (string, error) {
 	if len(args) != 1 {
@@ -26,43 +37,6 @@ func extractCSV(args []string) (string, error) {
 	}
 
 	return arg, nil
-}
-
-type scoreLog struct {
-	playerId int
-	score    int
-}
-
-type player struct {
-	id        int
-	meanScore int
-	rank      int
-}
-
-// parseScoreLogs returns parsing of [][]string to []scoreLog.
-func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
-	var sls []scoreLog
-
-	for _, line := range lines {
-		if len(line) != 2 {
-			return nil, &ymmerrs.InvalidElementsCountError{N: 2}
-		}
-
-		playerId, err := strconv.Atoi(line[0])
-		if err != nil {
-			return nil, err
-		}
-
-		score, err := strconv.Atoi(line[1])
-		if err != nil {
-			return nil, err
-		}
-
-		sl := scoreLog{playerId: playerId, score: score}
-		sls = append(sls, sl)
-	}
-
-	return sls, nil
 }
 
 // readCSV returns [][]string using *csv.Reader.
@@ -91,6 +65,32 @@ func readCSV(reader *csv.Reader, header bool) ([][]string, error) {
 	}
 
 	return lines, nil
+}
+
+// parseScoreLogs returns parsing of [][]string to []scoreLog.
+func parseScoreLogs(lines [][]string) ([]scoreLog, error) {
+	var sls []scoreLog
+
+	for _, line := range lines {
+		if len(line) != 2 {
+			return nil, &ymmerrs.InvalidElementsCountError{N: 2}
+		}
+
+		playerId, err := strconv.Atoi(line[0])
+		if err != nil {
+			return nil, err
+		}
+
+		score, err := strconv.Atoi(line[1])
+		if err != nil {
+			return nil, err
+		}
+
+		sl := scoreLog{playerId: playerId, score: score}
+		sls = append(sls, sl)
+	}
+
+	return sls, nil
 }
 
 func main() {
